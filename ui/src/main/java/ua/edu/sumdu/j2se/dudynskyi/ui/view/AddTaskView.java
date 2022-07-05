@@ -4,7 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ua.edu.sumdu.j2se.dudynskyi.tasks.AbstractTaskList;
 import ua.edu.sumdu.j2se.dudynskyi.tasks.Task;
-import ua.edu.sumdu.j2se.dudynskyi.ui.enums.Choice;
+import ua.edu.sumdu.j2se.dudynskyi.ui.prints.UIPrintable;
 import ua.edu.sumdu.j2se.dudynskyi.ui.utils.DateTime;
 import ua.edu.sumdu.j2se.dudynskyi.ui.controller.Controller;
 import ua.edu.sumdu.j2se.dudynskyi.ui.utils.Validation;
@@ -14,63 +14,128 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.time.LocalDateTime;
 
-public class AddTaskView implements View {
+public class AddTaskView extends AbstractView {
 
     private static final Logger logger = LoggerFactory.getLogger(AddTaskView.class);
     private static final BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 
+    public AddTaskView(UIPrintable printUI) {
+        super(printUI);
+    }
+
     @Override
     public int printInfo(AbstractTaskList taskList) {
-        System.out.println("You can create a single task or an repeat task.\n" +
-                "Do you want to create a single task? Enter y or n:");
+        printUI.printAddTaskHeadPhrase();
+
         String title;
         LocalDateTime time;
         LocalDateTime startTime;
         LocalDateTime endTime;
-        int repeatInterval = 0;
+        int repeatInterval;
         Task task;
-        String choice;
+        String userInput;
 
         try {
             while (true) {
-                choice = reader.readLine();
-                if (Validation.ynValidation(choice)) {
+                userInput = reader.readLine();
+                if (Validation.cancelValidation(userInput)) {
+                    printUI.printCancel();
+                    return Controller.MAIN_MENU_ACTION;
+                }
+                if (Validation.yesNoValidation(userInput)) {
                     break;
                 } else {
-                    System.out.println("Incorrect value. Enter y or n");
+                    printUI.printInvalidYesNoInput();
                 }
             }
-            System.out.println("title:");
-            title = reader.readLine();
-            if (Choice.Y.toString().equalsIgnoreCase(choice)) {
-                System.out.println("time for single task (yyyy-mm-dd hh:mm):");
-                time = DateTime.inputTimeToCreate(reader);
+            printUI.printInputTaskTitle();
+            userInput = reader.readLine();
+            if (Validation.cancelValidation(userInput)) {
+                printUI.printCancel();
+                return Controller.MAIN_MENU_ACTION;
+            } else {
+                title = userInput;
+            }
+            if (Validation.yesNoValidation(userInput)) {
+                printUI.printInputTime();
+                while (true) {
+                    userInput = reader.readLine();
+                    if (Validation.cancelValidation(userInput)) {
+                        printUI.printCancel();
+                        return Controller.MAIN_MENU_ACTION;
+                    } else {
+                        time = DateTime.getTime(userInput, printUI);
+                        if (time != null) {
+                            break;
+                        }
+                    }
+                }
                 task = new Task(title, time);
             } else {
-                System.out.println("start time for repeat task (yyyy-mm-dd hh:mm):");
-                startTime = DateTime.inputTimeToCreate(reader);
-                System.out.println("end time for repeat task (yyyy-mm-dd hh:mm):");
-                endTime = DateTime.inputTimeToCreate(reader);
-                while (startTime.isAfter(endTime) || startTime.equals(endTime)) {
-                    System.out.println("The end time must come after the start time. " +
-                            "Enter the end time correctly");
-                    endTime = DateTime.inputTimeToCreate(reader);
+                printUI.printInputStartTime();
+                while (true) {
+                    userInput = reader.readLine();
+                    if (Validation.cancelValidation(userInput)) {
+                        printUI.printCancel();
+                        return Controller.MAIN_MENU_ACTION;
+                    } else {
+                        startTime = DateTime.getTime(userInput, printUI);
+                        if (startTime != null) {
+                            break;
+                        }
+                    }
                 }
-                System.out.println("repeat interval:");
-                String interval = reader.readLine();
-                if (!interval.isEmpty()) {
-                    repeatInterval = Integer.parseInt(interval);
+                printUI.printInputEndTime();
+                while (true) {
+                    userInput = reader.readLine();
+                    if (Validation.cancelValidation(userInput)) {
+                        printUI.printCancel();
+                        return Controller.MAIN_MENU_ACTION;
+                    } else {
+                        endTime = DateTime.getTime(userInput, printUI);
+                        if (endTime != null) {
+                            break;
+                        }
+                    }
+                }
+                while (startTime.isAfter(endTime) || startTime.equals(endTime)) {
+                    printUI.printEndTimeBiggerStartTime();
+                    while (true) {
+                        userInput = reader.readLine();
+                        if (Validation.cancelValidation(userInput)) {
+                            printUI.printCancel();
+                            return Controller.MAIN_MENU_ACTION;
+                        } else {
+                            endTime = DateTime.getTime(userInput, printUI);
+                            if (endTime != null) {
+                                break;
+                            }
+                        }
+                    }
+                }
+                printUI.printInputRepeatInterval();
+                while (true) {
+                    userInput = reader.readLine();
+                    if (Validation.cancelValidation(userInput)) {
+                        printUI.printCancel();
+                        return Controller.MAIN_MENU_ACTION;
+                    } else {
+                        repeatInterval = DateTime.getRepeatInterval(userInput, printUI);
+                        if (repeatInterval > 0) {
+                            break;
+                        }
+                    }
                 }
                 task = new Task(title, startTime, endTime, repeatInterval);
             }
             task.setActive(true);
             taskList.add(task);
-            System.out.println("New task added");
-            logger.info("Task {} has added", task);
+            printUI.printNewTaskAdded();
+            logger.info("{} has added", task);
 
         } catch (IOException e) {
             logger.error("User input error", e);
-            System.out.println("Something wrong. Please try again");
+            printUI.printIsWrongTryAgain();
         }
         System.out.println("===================");
 

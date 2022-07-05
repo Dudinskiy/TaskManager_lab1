@@ -20,7 +20,7 @@ public class LinkedTaskList extends AbstractTaskList implements Cloneable {
 
     public void add(Task task) {
         if (task == null) {
-            throw new IllegalArgumentException("Задача не должна быть равна null");
+            throw new IllegalArgumentException("Task must not be null");
         }
         if (first == null) {
             first = new Node(task, null, null);
@@ -36,7 +36,7 @@ public class LinkedTaskList extends AbstractTaskList implements Cloneable {
 
     public boolean remove(Task task) {
         if (task == null) {
-            throw new IllegalArgumentException("Задача не должна быть равна null");
+            throw new IllegalArgumentException("Task must not be null");
         }
         Node currentNode = first;
         Node previousNode;
@@ -70,7 +70,7 @@ public class LinkedTaskList extends AbstractTaskList implements Cloneable {
 
     public Task getTask(int index) {
         if (index > size()) {
-            throw new IndexOutOfBoundsException();
+            throw new IndexOutOfBoundsException("Task list size exceeded");
         }
         Node currentNode;
         Task taskFromList;
@@ -146,21 +146,12 @@ public class LinkedTaskList extends AbstractTaskList implements Cloneable {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder("LinkedTaskList{");
-        if (taskAmount != 0) {
-            Task[] arr = toArray();
-            sb.append("taskAmount=").append(taskAmount).append(",\n");
-            for (int i = 0; i < taskAmount; i++) {
-                if (i != taskAmount - 1) {
-                    sb.append(arr[i].toString()).append(",").append("\n");
-                } else {
-                    sb.append(arr[i].toString()).append("}");
-                }
-            }
-        } else {
-            sb.append("taskAmount=").append(taskAmount).append("}");
+        StringBuilder sb = new StringBuilder("LinkedTaskList{taskAmount=").append(taskAmount);
+        Task[] arr = toArray();
+        for (int i = 0; i < taskAmount; i++) {
+            sb.append(",\n").append(arr[i]);
         }
-        return sb.toString();
+        return sb.append("}").toString();
     }
 
     private static class Node implements Serializable {

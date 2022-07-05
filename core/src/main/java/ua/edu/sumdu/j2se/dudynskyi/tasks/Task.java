@@ -23,7 +23,7 @@ public class Task implements Cloneable, Serializable {
      */
     public Task(String title, LocalDateTime time) {
         if (time == null) {
-            throw new IllegalArgumentException("");
+            throw new IllegalArgumentException("Time must not be null");
         }
         this.title = title;
         this.time = time;

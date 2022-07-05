@@ -5,49 +5,60 @@ import org.slf4j.LoggerFactory;
 import ua.edu.sumdu.j2se.dudynskyi.tasks.AbstractTaskList;
 import ua.edu.sumdu.j2se.dudynskyi.tasks.Task;
 import ua.edu.sumdu.j2se.dudynskyi.ui.controller.Controller;
+import ua.edu.sumdu.j2se.dudynskyi.ui.prints.UIPrintable;
 import ua.edu.sumdu.j2se.dudynskyi.ui.utils.UserInput;
+import ua.edu.sumdu.j2se.dudynskyi.ui.utils.Validation;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-public class RemoveTaskView implements View{
+public class RemoveTaskView extends AbstractView {
 
     private static final Logger logger = LoggerFactory.getLogger(RemoveTaskView.class);
     private static final BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 
+    public RemoveTaskView(UIPrintable printUI) {
+        super(printUI);
+    }
+
     @Override
     public int printInfo(AbstractTaskList taskList) {
         if (taskList.size() == 0) {
-            System.out.println("There are no tasks in the task list");
-            System.out.println("===================");
+            printUI.printTaskListIsEmpty();
             return Controller.MAIN_MENU_ACTION;
         }
-        System.out.println("To delete a task, enter its order number from the list below");
-        int number = 1;
         int taskNumber;
         boolean isRemove;
-        for (Task task : taskList) {
-            if (task.isRepeated()) {
-                System.out.println(number + ". " + task.getTitle() + " - repeat");
-            } else {
-                System.out.println(number + ". " + task.getTitle() + " - single");
-            }
-            number++;
-        }
+        String userInput;
+
+        printUI.printRemoveTaskHeadPhase();
+        printUI.printTaskList(taskList);
+
         try {
-            taskNumber = UserInput.inputTaskNumber(reader, taskList);
+            while (true) {
+                userInput = reader.readLine();
+                if (Validation.cancelValidation(userInput)) {
+                    printUI.printCancel();
+                    return Controller.MAIN_MENU_ACTION;
+                } else {
+                    taskNumber = UserInput.inputTaskNumber(userInput, taskList, printUI);
+                    if (taskNumber > 0) {
+                        break;
+                    }
+                }
+            }
             Task task = taskList.getTask(taskNumber - 1);
             isRemove = taskList.remove(task);
             if (isRemove) {
-                System.out.println("The task removed");
-                logger.info("Task {} has removed", task);
+                printUI.printTaskRemoved();
+                logger.info("{} has removed", task);
             } else {
-                System.out.println("Something wrong. Please try again");
+                printUI.printIsWrongTryAgain();
             }
         } catch (IOException e) {
             logger.error("User input error", e);
-            System.out.println("Something wrong. Please try again");
+            printUI.printIsWrongTryAgain();
         }
         System.out.println("===================");
         return Controller.MAIN_MENU_ACTION;

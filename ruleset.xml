@@ -1,0 +1,162 @@
+<?xml version="1.0"?>
+
+<ruleset name="NC EDU PMD Ruleset"
+  xmlns="http://pmd.sf.net/ruleset/1.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://pmd.sf.net/ruleset/1.0.0 http://pmd.sf.net/ruleset_xml_schema.xsd"
+  xsi:noNamespaceSchemaLocation="http://pmd.sf.net/ruleset_xml_schema.xsd">
+
+  <!--
+    Rule priority level:
+    1. Change absolutely required. Behavior is critically broken/buggy.
+    2. Change highly recommended. Behavior is quite likely to be broken/buggy.
+    3. Change recommended. Behavior is confusing, perhaps buggy, and/or against standards/best practices.
+    4. Change optional. Behavior is not likely to be buggy, but more just flies in the face of standards/style/good taste.
+    5. Change highly optional. Nice to have, such as a consistent naming policy for package/class/fields…
+  -->
+
+  <!-- Best Practices -->
+  <rule ref="category/java/bestpractices.xml"/>
+
+  <rule ref="category/java/bestpractices.xml/AvoidPrintStackTrace">
+    <priority>1</priority>
+  </rule>
+
+  <!-- Code Style -->
+  <rule ref="category/java/codestyle.xml">
+    <exclude name="AtLeastOneConstructor"/>
+    <exclude name="UselessParentheses"/>
+    <exclude name="CommentDefaultAccessModifier"/>
+    <exclude name="AbstractNaming"/>
+    <exclude name="DefaultPackage"/>
+    <exclude name="CallSuperInConstructor"/>
+    <exclude name="LocalVariableCouldBeFinal"/>
+  </rule>
+
+  <rule ref="category/java/codestyle.xml/ShortMethodName">
+    <priority>5</priority>
+    <properties>
+      <property name="minimum" value="2"/>
+    </properties>
+  </rule>
+
+  <rule ref="category/java/codestyle.xml/FieldNamingConventions">
+    <priority>5</priority>
+    <properties>
+      <property name="publicConstantPattern" value="[A-Z][A-Z_0-9]+"/> <!--public static final-->
+      <property name="constantPattern" value="[A-Z][A-Z_0-9]+"/> <!--static final-->
+      <property name="finalFieldPattern" value="[a-z][a-zA-Z0-9]+"/> <!--final-->
+      <property name="staticFieldPattern" value="[a-z][a-zA-Z0-9]+"/> <!--static-->
+      <property name="enumConstantPattern" value="[A-Z][A-Z_0-9]+"/>
+      <property name="defaultFieldPattern" value="[a-z][a-zA-Z0-9]+"/> <!--any other cases-->
+      <property name="exclusions" value="serialVersionUID|serialPersistentFields"/>
+    </properties>
+  </rule>
+
+  <rule ref="category/java/codestyle.xml/MethodNamingConventions">
+    <priority>5</priority>
+    <properties>
+      <property name="methodPattern" value="[a-z][a-zA-Z0-9]+"/> <!--instance method-->
+      <property name="staticPattern" value="[a-z][a-zA-Z0-9]+"/> <!--static method-->
+      <property name="nativePattern" value="[a-z][a-zA-Z0-9]+"/> <!--native method-->
+      <property name="junit3TestPattern"
+        value="test[A-Z0-9][a-zA-Z0-9]*"/> <!--JUnit 3 test method-->
+      <property name="junit4TestPattern" value="[a-z][a-zA-Z0-9]+"/> <!--JUnit 4 test method-->
+      <property name="junit5TestPattern" value="[a-z][a-zA-Z0-9]+"/> <!--JUnit 5 test method-->
+    </properties>
+  </rule>
+
+  <rule ref="category/java/codestyle.xml/FormalParameterNamingConventions">
+    <priority>5</priority>
+    <properties>
+      <property name="methodParameterPattern" value="(id|[a-z][a-zA-Z0-9]{2,})"/>
+      <property name="finalMethodParameterPattern" value="(id|[a-z][a-zA-Z0-9]{2,})"/>
+      <property name="lambdaParameterPattern" value="(id|[a-z][a-zA-Z0-9]{2,})"/>
+      <property name="explicitLambdaParameterPattern" value="(id|[a-z][a-zA-Z0-9]{2,})"/>
+    </properties>
+  </rule>
+
+  <rule ref="category/java/codestyle.xml/ClassNamingConventions">
+    <priority>5</priority>
+    <properties>
+      <property name="classPattern" value="[A-Z][a-zA-Z0-9]+"/>
+      <property name="abstractClassPattern" value="[A-Z][a-zA-Z0-9]+"/>
+      <property name="interfacePattern" value="[A-Z][a-zA-Z0-9]+"/>
+      <property name="enumPattern" value="[A-Z][a-zA-Z0-9]+"/>
+      <property name="annotationPattern" value="[A-Z][a-zA-Z0-9]+"/>
+      <property name="utilityClassPattern" value="[A-Z][a-zA-Z0-9]+"/>
+    </properties>
+  </rule>
+
+  <rule ref="category/java/codestyle.xml/LocalVariableNamingConventions">
+    <priority>5</priority>
+    <properties>
+      <property name="localVarPattern" value="[a-z][a-zA-Z0-9]+"/>
+      <property name="finalVarPattern" value="[a-z][a-zA-Z0-9]+"/>
+      <property name="catchParameterPattern" value="(ex?|[a-z][a-zA-Z0-9]{2,})"/>
+      <property name="violationSuppressXPath" value="./ancestor::ForInit"/> <!--exclude for `for(int i = ...)` cases-->
+    </properties>
+  </rule>
+
+  <!-- Design -->
+  <rule ref="category/java/design.xml">
+    <exclude name="LawOfDemeter"/>
+    <exclude name="ExcessiveImports"/>
+  </rule>
+
+  <rule ref="category/java/design.xml/ExcessiveParameterList">
+    <priority>3</priority>
+    <properties>
+      <property name="minimum" value="5"/>
+      <property name="violationSuppressXPath" description="skip methods with @Override annotation"
+        value="./../../../Annotation[pmd-java:typeIs('java.lang.Override')]"/>
+    </properties>
+  </rule>
+
+  <!-- Documentation -->
+  <rule ref="category/java/documentation.xml">
+    <exclude name="CommentRequired"/>
+    <exclude name="CommentSize"/>
+  </rule>
+
+  <rule ref="category/java/documentation.xml/CommentRequired">
+    <properties>
+      <property name="classCommentRequirement" value="Required"/>
+      <property name="publicMethodCommentRequirement" value="Required"/>
+      <property name="enumCommentRequirement" value="Required"/>
+      <property name="methodWithOverrideCommentRequirement" value="Ignored"/>
+      <property name="accessorCommentRequirement" value="Ignored"/>
+      <property name="fieldCommentRequirement" value="Ignored"/>
+      <property name="protectedMethodCommentRequirement" value="Ignored"/>
+      <property name="serialVersionUIDCommentRequired" value="Ignored"/>
+      <property name="serialPersistentFieldsCommentRequired" value="Ignored"/>
+    </properties>
+  </rule>
+
+  <!-- Error Prone -->
+  <rule ref="category/java/errorprone.xml">
+    <exclude name="BeanMembersShouldSerialize"/>
+    <exclude name="MissingSerialVersionUID"/>
+  </rule>
+  <rule ref="category/java/errorprone.xml/AvoidDuplicateLiterals">
+    <properties>
+      <property name="maxDuplicateLiterals" value="2"/>
+      <property name="skipAnnotations" value="true"/>
+    </properties>
+  </rule>
+
+  <!-- Multithreading -->
+  <rule ref="category/java/multithreading.xml">
+    <exclude name="UseConcurrentHashMap"/>
+    <exclude name="UnsynchronizedStaticDateFormatter"/><!--deprecated-->
+  </rule>
+
+  <!-- Performance -->
+  <rule ref="category/java/performance.xml">
+    <exclude name="AvoidInstantiatingObjectsInLoops"/>
+  </rule>
+
+  <!-- Security -->
+  <rule ref="category/java/security.xml"/>
+
+</ruleset>

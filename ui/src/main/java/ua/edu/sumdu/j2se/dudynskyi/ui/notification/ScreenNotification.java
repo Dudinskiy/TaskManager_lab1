@@ -1,12 +1,20 @@
 package ua.edu.sumdu.j2se.dudynskyi.ui.notification;
 
 import ua.edu.sumdu.j2se.dudynskyi.tasks.Task;
+import ua.edu.sumdu.j2se.dudynskyi.ui.prints.UIPrintable;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
 public class ScreenNotification implements Notification {
+
+    private UIPrintable printUI;
+
+    public ScreenNotification(UIPrintable printUI) {
+        this.printUI = printUI;
+    }
+
     @Override
     public void taskNotify(Set<Task> taskSet) {
         LocalDateTime current = LocalDateTime.now().withSecond(0).withNano(0);
@@ -15,16 +23,12 @@ public class ScreenNotification implements Notification {
                 Set<LocalDateTime> allDate = allDatesForRepeatTask(task);
                 for (LocalDateTime time : allDate) {
                     if (current.isEqual(time)) {
-                        System.out.println("===================");
-                        System.out.println("You have to do the task: " + task.getTitle());
-                        System.out.println("===================");
+                        printUI.printTaskNotification(task);
                     }
                 }
             } else {
                 if (current.isEqual(task.getTime())) {
-                    System.out.println("===================");
-                    System.out.println("You have to do the task: " + task.getTitle());
-                    System.out.println("===================");
+                    printUI.printTaskNotification(task);
                 }
             }
         }

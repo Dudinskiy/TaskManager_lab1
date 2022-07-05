@@ -5,8 +5,10 @@ import org.slf4j.LoggerFactory;
 import ua.edu.sumdu.j2se.dudynskyi.tasks.AbstractTaskList;
 import ua.edu.sumdu.j2se.dudynskyi.tasks.Task;
 import ua.edu.sumdu.j2se.dudynskyi.tasks.Tasks;
+import ua.edu.sumdu.j2se.dudynskyi.ui.prints.UIPrintable;
 import ua.edu.sumdu.j2se.dudynskyi.ui.utils.DateTime;
 import ua.edu.sumdu.j2se.dudynskyi.ui.controller.Controller;
+import ua.edu.sumdu.j2se.dudynskyi.ui.utils.Validation;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -15,29 +17,67 @@ import java.time.LocalDateTime;
 import java.util.Set;
 import java.util.SortedMap;
 
-public class CalendarView implements View {
+public class CalendarView extends AbstractView {
+
     private static final Logger logger = LoggerFactory.getLogger(CalendarView.class);
     private static final BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+
+    public CalendarView(UIPrintable printUI) {
+        super(printUI);
+    }
 
     @Override
     public int printInfo(AbstractTaskList taskList) {
         if (taskList.size() == 0) {
-            System.out.println("There are no tasks in the task list");
-            System.out.println("===================");
+            printUI.printCancel();
             return Controller.MAIN_MENU_ACTION;
         }
-        System.out.println("To get task calendar for a period, input a start date and an end date.");
+        printUI.printGetCalendarHeadPhrase();
+
         LocalDateTime start;
         LocalDateTime end;
+        String userInput;
         try {
-            System.out.println("start time for repeat task (yyyy-mm-dd hh:mm):");
-            start = DateTime.inputTimeToCreate(reader);
-            System.out.println("end time for repeat task (yyyy-mm-dd hh:mm):");
-            end = DateTime.inputTimeToCreate(reader);
-            while(start.isAfter(end) || start.equals(end)){
-                System.out.println("The end time must come after the start time. " +
-                        "Enter the end time correctly");
-                end = DateTime.inputTimeToCreate(reader);
+            printUI.printInputStartTimeCalendar();
+            while (true) {
+                userInput = reader.readLine();
+                if (Validation.cancelValidation(userInput)) {
+                    printUI.printCancel();
+                    return Controller.MAIN_MENU_ACTION;
+                } else {
+                    start = DateTime.getTime(userInput, printUI);
+                    if (start != null) {
+                        break;
+                    }
+                }
+            }
+            printUI.printInputEndTimeCalendar();
+            while (true) {
+                userInput = reader.readLine();
+                if (Validation.cancelValidation(userInput)) {
+                    printUI.printCancel();
+                    return Controller.MAIN_MENU_ACTION;
+                } else {
+                    end = DateTime.getTime(userInput, printUI);
+                    if (end != null) {
+                        break;
+                    }
+                }
+            }
+            while (start.isAfter(end) || start.equals(end)) {
+                printUI.printEndTimeBiggerStartTime();
+                while (true) {
+                    userInput = reader.readLine();
+                    if (Validation.cancelValidation(userInput)) {
+                        printUI.printCancel();
+                        return Controller.MAIN_MENU_ACTION;
+                    } else {
+                        end = DateTime.getTime(userInput, printUI);
+                        if (end != null) {
+                            break;
+                        }
+                    }
+                }
             }
 
             SortedMap<LocalDateTime, Set<Task>> calendar = Tasks.calendar(taskList, start, end);
@@ -45,7 +85,7 @@ public class CalendarView implements View {
 
         } catch (IOException e) {
             logger.error("User input error", e);
-            System.out.println("Something wrong. Please try again");
+            printUI.printIsWrongTryAgain();
         }
         System.out.println("===================");
 

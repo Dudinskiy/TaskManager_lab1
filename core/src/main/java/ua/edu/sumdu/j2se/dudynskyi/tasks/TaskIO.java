@@ -2,6 +2,7 @@ package ua.edu.sumdu.j2se.dudynskyi.tasks;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import ua.edu.sumdu.j2se.dudynskyi.tasks.exceptions.TaskIOException;
 
 import java.io.*;
 import java.time.Instant;
@@ -11,7 +12,7 @@ import java.time.ZonedDateTime;
 import java.util.TimeZone;
 
 public class TaskIO {
-    public static void write(AbstractTaskList tasks, OutputStream out) {
+    public static void write(AbstractTaskList tasks, OutputStream out) throws TaskIOException {
         try (DataOutputStream dos = new DataOutputStream(out)) {
             dos.writeInt(tasks.taskAmount);
             for (Task task : tasks) {
@@ -32,7 +33,7 @@ public class TaskIO {
             }
             dos.flush();
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new TaskIOException(e);
         }
     }
 
@@ -42,7 +43,7 @@ public class TaskIO {
         return timeZ.toInstant().toEpochMilli();
     }
 
-    public static void read(AbstractTaskList tasks, InputStream in) {
+    public static void read(AbstractTaskList tasks, InputStream in) throws TaskIOException {
         try (DataInputStream dis = new DataInputStream(in)) {
             int taskAmount = dis.readInt();
             for (int i = 0; i < taskAmount; i++) {
@@ -70,7 +71,7 @@ public class TaskIO {
                 tasks.add(task);
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new TaskIOException(e);
         }
     }
 
@@ -80,24 +81,24 @@ public class TaskIO {
                         , TimeZone.getDefault().toZoneId());
     }
 
-    public static void writeBinary(AbstractTaskList tasks, File file) {
+    public static void writeBinary(AbstractTaskList tasks, File file) throws TaskIOException {
         try (BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(file))
         ) {
             write(tasks, bos);
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new TaskIOException(e);
         }
     }
 
-    public static void readBinary(AbstractTaskList tasks, File file) {
+    public static void readBinary(AbstractTaskList tasks, File file) throws TaskIOException {
         try (BufferedInputStream bis = new BufferedInputStream(new FileInputStream(file))) {
             read(tasks, bis);
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new TaskIOException(e);
         }
     }
 
-    public static void write(AbstractTaskList tasks, Writer out) {
+    public static void write(AbstractTaskList tasks, Writer out) throws TaskIOException {
         try (BufferedWriter bw = new BufferedWriter(out)) {
             Gson gson = new GsonBuilder()
                     .setPrettyPrinting()
@@ -109,11 +110,11 @@ public class TaskIO {
             bw.write(json);
             bw.flush();
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new TaskIOException(e);
         }
     }
 
-    public static void read(AbstractTaskList tasks, Reader in) {
+    public static void read(AbstractTaskList tasks, Reader in) throws TaskIOException {
         try (BufferedReader br = new BufferedReader(in)) {
             String str = "";
             StringBuilder builder = new StringBuilder(str);
@@ -129,25 +130,23 @@ public class TaskIO {
             }
 
         } catch (IOException e) {
-            //e.printStackTrace();
-            System.out.println("file is empty");
+            throw new TaskIOException(e);
         }
     }
 
-    public static void writeText(AbstractTaskList tasks, File file) {
+    public static void writeText(AbstractTaskList tasks, File file) throws TaskIOException {
         try (FileWriter writer = new FileWriter(file)) {
             write(tasks, writer);
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new TaskIOException(e);
         }
     }
 
-    public static void readText(AbstractTaskList tasks, File file) {
+    public static void readText(AbstractTaskList tasks, File file) throws TaskIOException {
         try (FileReader reader = new FileReader(file)) {
             read(tasks, reader);
         } catch (IOException e) {
-            //e.printStackTrace();
-            System.out.println("file is empty");
+            throw new TaskIOException(e);
         }
     }
 }

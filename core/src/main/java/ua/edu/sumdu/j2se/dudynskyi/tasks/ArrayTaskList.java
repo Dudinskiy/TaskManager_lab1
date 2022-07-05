@@ -10,15 +10,14 @@ public class ArrayTaskList extends AbstractTaskList implements Cloneable {
 
     private static final long serialVersionUID = 21L;
     private Task[] taskList;
-    private static final int DEFAULT_CAPACITY = 10;
-
+    private static final int default_capacity = 10;
 
     /**
      * Данный конструктор создает список задач с размером по умолчанию 10.
      */
     public ArrayTaskList() {
         super();
-        taskList = new Task[DEFAULT_CAPACITY];
+        taskList = new Task[default_capacity];
         type = ListTypes.types.ARRAY;
     }
 
@@ -88,7 +87,7 @@ public class ArrayTaskList extends AbstractTaskList implements Cloneable {
      */
     public Task getTask(int index) {
         if (index > taskList.length - 1) {
-            throw new IndexOutOfBoundsException();
+            throw new IndexOutOfBoundsException("Task list size exceeded");
         }
         return taskList[index];
     }
@@ -134,20 +133,11 @@ public class ArrayTaskList extends AbstractTaskList implements Cloneable {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder("ArrayTaskList{");
-        if (taskAmount != 0) {
-            sb.append("taskAmount=").append(taskAmount).append(",\n");
-            for (int i = 0; i < taskAmount; i++) {
-                if (i != taskAmount - 1) {
-                    sb.append(taskList[i].toString()).append(",").append("\n");
-                } else {
-                    sb.append(taskList[i].toString()).append("}");
-                }
-            }
-        } else {
-            sb.append("taskAmount=").append(taskAmount).append("}");
+        StringBuilder sb = new StringBuilder("ArrayTaskList{taskAmount=").append(taskAmount);
+        for (int i = 0; i < taskAmount; i++) {
+            sb.append(",\n").append(taskList[i]);
         }
-        return sb.toString();
+        return sb.append("}").toString();
     }
 
     private class Iter implements Iterator<Task> {

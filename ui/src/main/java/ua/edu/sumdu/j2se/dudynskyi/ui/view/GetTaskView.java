@@ -5,42 +5,52 @@ import org.slf4j.LoggerFactory;
 import ua.edu.sumdu.j2se.dudynskyi.tasks.AbstractTaskList;
 import ua.edu.sumdu.j2se.dudynskyi.tasks.Task;
 import ua.edu.sumdu.j2se.dudynskyi.ui.controller.Controller;
+import ua.edu.sumdu.j2se.dudynskyi.ui.prints.UIPrintable;
 import ua.edu.sumdu.j2se.dudynskyi.ui.utils.UserInput;
+import ua.edu.sumdu.j2se.dudynskyi.ui.utils.Validation;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-public class GetTaskView implements View{
+public class GetTaskView extends AbstractView {
     private static final Logger logger = LoggerFactory.getLogger(GetTaskView.class);
     private static final BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 
+    public GetTaskView(UIPrintable printUI) {
+        super(printUI);
+    }
+
     @Override
     public int printInfo(AbstractTaskList taskList) {
-        if(taskList.size() == 0){
-            System.out.println("There are no tasks in the task list");
-            System.out.println("===================");
+        if (taskList.size() == 0) {
+            printUI.printTaskListIsEmpty();
             return Controller.MAIN_MENU_ACTION;
         }
-        System.out.println("To get a task, enter its order number from the list below.");
-        int number = 1;
-        for (Task task : taskList) {
-            if (task.isRepeated()) {
-                System.out.println(number + ". " + task.getTitle() + " - repeat");
-            } else {
-                System.out.println(number + ". " + task.getTitle() + " - single");
-            }
-            number++;
-        }
-
         int taskNumber;
+        String userInput;
+
+        printUI.printGetTaskHeadPhrase();
+        printUI.printTaskList(taskList);
+
         try {
-            taskNumber = UserInput.inputTaskNumber(reader, taskList);
+            while (true) {
+                userInput = reader.readLine();
+                if (Validation.cancelValidation(userInput)) {
+                    printUI.printCancel();
+                    return Controller.MAIN_MENU_ACTION;
+                } else {
+                    taskNumber = UserInput.inputTaskNumber(userInput, taskList, printUI);
+                    if (taskNumber > 0) {
+                        break;
+                    }
+                }
+            }
             Task task = taskList.getTask(taskNumber - 1);
             System.out.println(task);
         } catch (IOException e) {
             logger.error("User input error", e);
-            System.out.println("Something wrong. Please try again");
+            printUI.printIsWrongTryAgain();
         }
         System.out.println("===================");
         return Controller.MAIN_MENU_ACTION;
