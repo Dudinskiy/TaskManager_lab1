@@ -10,6 +10,9 @@ public class DateTime {
 
     private static final String dateFormat = "yyyy-MM-dd HH:mm";
 
+    private DateTime() {
+    }
+
     private static LocalDateTime getTimeFromString(String time) {
         if (time.isEmpty()) {
             return null;
@@ -19,9 +22,15 @@ public class DateTime {
         }
     }
 
-    public static LocalDateTime getTime(String timeStr, UIPrintable printUI) {
+    public static LocalDateTime getTime(String inputData, UIPrintable printUI) {
         LocalDateTime time;
-        if (Validation.dateValidation(timeStr)) {
+        String timeStr;
+        if (Validation.dateValidation(inputData)) {
+            if (inputData.length() == 11) {
+                timeStr = getStringForShortDate(inputData);
+            } else {
+                timeStr = inputData;
+            }
             time = DateTime.getTimeFromString(timeStr);
             if (Validation.isFuture(time)) {
                 return time;
@@ -66,5 +75,11 @@ public class DateTime {
         String intervalStr = inputData.substring(0, inputData.length() - 1);
         float interval = Float.parseFloat(intervalStr);
         return (int) (86400 * interval);
+    }
+
+    private static String getStringForShortDate(String inputData) {
+        LocalDateTime now = LocalDateTime.now().withSecond(0).withNano(0);
+        String year = now.toString().substring(0, 4);
+        return year + "-" + inputData;
     }
 }

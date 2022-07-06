@@ -8,6 +8,9 @@ import java.util.regex.Pattern;
 
 public class Validation {
 
+    private Validation() {
+    }
+
     public static boolean yesNoValidation(String choice) {
         return UserInput.YES.equals(choice)
                 || UserInput.NO.equals(choice);

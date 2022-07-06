@@ -2,8 +2,6 @@ package ua.edu.sumdu.j2se.dudynskyi.ui.unit.utils;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import ua.edu.sumdu.j2se.dudynskyi.ui.prints.PrintsEng;
 import ua.edu.sumdu.j2se.dudynskyi.ui.prints.UIPrintable;
 import ua.edu.sumdu.j2se.dudynskyi.ui.utils.DateTime;
@@ -18,10 +16,14 @@ public class DateTimeTest {
     private static final LocalDateTime past = now.minusHours(1);
     private static final LocalDateTime future = now.plusHours(1);
     private static final String fullDateWrong = "1022-01-01 12:00";
+    private static final String shortDateWrong = "15-01 12:00";
     private static final String empty = "";
-    private static final String stringNow = getStringFromDate(now);
-    private static final String stringPast = getStringFromDate(past);
-    private static final String stringFuture = getStringFromDate(future);
+    private static final String fullStringNow = getFullStringDate(now);
+    private static final String fullStringPast = getFullStringDate(past);
+    private static final String fullStringFuture = getFullStringDate(future);
+    private static final String shortStringNow = getShortStringDate(now);
+    private static final String shortStringPast = getShortStringDate(past);
+    private static final String shortStringFuture = getShortStringDate(future);
 
     private static final String hourIntervalRight_1 = "10";
     private static final int hourIntervalRightToSeconds_1 = 36000;
@@ -34,10 +36,16 @@ public class DateTimeTest {
 
     @Test
     public void getTimeTest() {
-        Assert.assertEquals(DateTime.getTime(stringFuture, printUI), future);
-        Assert.assertNull(DateTime.getTime(stringPast, printUI));
-        Assert.assertNull(DateTime.getTime(stringNow, printUI));
+        Assert.assertEquals(DateTime.getTime(fullStringFuture, printUI), future);
+        Assert.assertNull(DateTime.getTime(fullStringPast, printUI));
+        Assert.assertNull(DateTime.getTime(fullStringNow, printUI));
         Assert.assertNull(DateTime.getTime(fullDateWrong, printUI));
+
+        Assert.assertEquals(DateTime.getTime(shortStringFuture, printUI), future);
+        Assert.assertNull(DateTime.getTime(shortStringPast, printUI));
+        Assert.assertNull(DateTime.getTime(shortStringNow, printUI));
+        Assert.assertNull(DateTime.getTime(shortDateWrong, printUI));
+
         Assert.assertNull(DateTime.getTime(empty, printUI));
     }
 
@@ -53,7 +61,12 @@ public class DateTimeTest {
                 , failResult);
     }
 
-    private static String getStringFromDate(LocalDateTime time) {
+    private static String getFullStringDate(LocalDateTime time) {
         return time.toString().replace("T", " ");
+    }
+
+    private static String getShortStringDate(LocalDateTime time){
+        String fullDate = getFullStringDate(time);
+        return fullDate.substring(5);
     }
 }

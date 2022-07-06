@@ -13,6 +13,9 @@ public class UserInput {
     public static final String NO = "-";
     public static final String CANCEL = " ";
 
+    private UserInput() {
+    }
+
     public static int inputActionNumber(BufferedReader reader
             , UIPrintable printUI) throws InputDataException {
         int result;

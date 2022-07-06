@@ -11,7 +11,7 @@
         "hour": 0,
         "minute": 0,
         "second": 0,
-        "nano": 902000000
+        "nano": 17000000
       }
     },
     "repeatInterval": 0,
@@ -29,7 +29,7 @@
         "hour": 0,
         "minute": 0,
         "second": 0,
-        "nano": 902000000
+        "nano": 17000000
       }
     },
     "endTime": {
@@ -42,7 +42,7 @@
         "hour": 0,
         "minute": 0,
         "second": 0,
-        "nano": 902000000
+        "nano": 17000000
       }
     },
     "repeatInterval": 3600,
@@ -60,7 +60,7 @@
         "hour": 0,
         "minute": 0,
         "second": 0,
-        "nano": 902000000
+        "nano": 17000000
       }
     },
     "repeatInterval": 0,
@@ -78,7 +78,7 @@
         "hour": 0,
         "minute": 0,
         "second": 0,
-        "nano": 902000000
+        "nano": 17000000
       }
     },
     "endTime": {
@@ -91,7 +91,7 @@
         "hour": 0,
         "minute": 0,
         "second": 0,
-        "nano": 902000000
+        "nano": 17000000
       }
     },
     "repeatInterval": 3600,

@@ -5,6 +5,8 @@ import com.google.gson.GsonBuilder;
 import ua.edu.sumdu.j2se.dudynskyi.tasks.exceptions.TaskIOException;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -12,6 +14,10 @@ import java.time.ZonedDateTime;
 import java.util.TimeZone;
 
 public class TaskIO {
+
+    private TaskIO() {
+    }
+
     public static void write(AbstractTaskList tasks, OutputStream out) throws TaskIOException {
         try (DataOutputStream dos = new DataOutputStream(out)) {
             dos.writeInt(tasks.taskAmount);
@@ -33,7 +39,7 @@ public class TaskIO {
             }
             dos.flush();
         } catch (IOException e) {
-            throw new TaskIOException(e);
+            throw new TaskIOException("Exception when serialization ArrayTaskList object", e);
         }
     }
 
@@ -71,7 +77,7 @@ public class TaskIO {
                 tasks.add(task);
             }
         } catch (IOException e) {
-            throw new TaskIOException(e);
+            throw new TaskIOException("Exception when deserialization ArrayTaskList object", e);
         }
     }
 
@@ -82,19 +88,23 @@ public class TaskIO {
     }
 
     public static void writeBinary(AbstractTaskList tasks, File file) throws TaskIOException {
-        try (BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(file))
+        //BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(file)
+        try (BufferedOutputStream bos = new BufferedOutputStream(
+                Files.newOutputStream(Paths.get(file.getPath())))
         ) {
             write(tasks, bos);
         } catch (IOException e) {
-            throw new TaskIOException(e);
+            throw new TaskIOException("Exception when serialization ArrayTaskList object", e);
         }
     }
 
     public static void readBinary(AbstractTaskList tasks, File file) throws TaskIOException {
-        try (BufferedInputStream bis = new BufferedInputStream(new FileInputStream(file))) {
+        //BufferedInputStream bis = new BufferedInputStream(new FileInputStream(file))
+        try (BufferedInputStream bis = new BufferedInputStream(
+                Files.newInputStream(Paths.get(file.getPath())))) {
             read(tasks, bis);
         } catch (IOException e) {
-            throw new TaskIOException(e);
+            throw new TaskIOException("Exception when deserialization ArrayTaskList object", e);
         }
     }
 
@@ -110,7 +120,7 @@ public class TaskIO {
             bw.write(json);
             bw.flush();
         } catch (IOException e) {
-            throw new TaskIOException(e);
+            throw new TaskIOException("Exception when serialization ArrayTaskList object", e);
         }
     }
 
@@ -130,23 +140,23 @@ public class TaskIO {
             }
 
         } catch (IOException e) {
-            throw new TaskIOException(e);
+            throw new TaskIOException("Exception when deserialization ArrayTaskList object", e);
         }
     }
 
     public static void writeText(AbstractTaskList tasks, File file) throws TaskIOException {
-        try (FileWriter writer = new FileWriter(file)) {
+        try (BufferedWriter writer = Files.newBufferedWriter(Paths.get(file.getPath()))) {
             write(tasks, writer);
         } catch (IOException e) {
-            throw new TaskIOException(e);
+            throw new TaskIOException("Exception when serialization ArrayTaskList object", e);
         }
     }
 
     public static void readText(AbstractTaskList tasks, File file) throws TaskIOException {
-        try (FileReader reader = new FileReader(file)) {
+        try (BufferedReader reader = Files.newBufferedReader(Paths.get(file.getPath()))) {
             read(tasks, reader);
         } catch (IOException e) {
-            throw new TaskIOException(e);
+            throw new TaskIOException("Exception when deserialization ArrayTaskList object", e);
         }
     }
 }

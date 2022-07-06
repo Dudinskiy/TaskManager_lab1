@@ -87,8 +87,8 @@
                         <ruleset>ruleset.xml</ruleset>
                     </rulesets>
                     <maxAllowedViolations>0</maxAllowedViolations>
-                    <failurePriority>1</failurePriority>
-                    <minimumPriority>2</minimumPriority>
+                    <failurePriority>3</failurePriority>
+                    <minimumPriority>3</minimumPriority>
                     <failOnViolation>false</failOnViolation>
                     <includeTests>false</includeTests>
                     <printFailingErrors>true</printFailingErrors>

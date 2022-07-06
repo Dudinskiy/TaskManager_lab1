@@ -4,6 +4,9 @@ import ua.edu.sumdu.j2se.dudynskyi.ui.config.TaskManagerConfig;
 
 public class UIPrintableFactory {
 
+    private UIPrintableFactory() {
+    }
+
     public static UIPrintable createUIPrintable(TaskManagerConfig config) {
         if (config != null) {
             switch (config.getLanguage()) {

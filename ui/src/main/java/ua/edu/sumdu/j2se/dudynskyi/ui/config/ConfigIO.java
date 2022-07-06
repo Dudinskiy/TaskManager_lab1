@@ -6,10 +6,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 public class ConfigIO {
 
     private static final Logger logger = LoggerFactory.getLogger(ConfigIO.class);
+
+    private ConfigIO() {
+    }
 
     public static void write(TaskManagerConfig config, OutputStream out) {
         try (ObjectOutputStream oos = new ObjectOutputStream(out)) {
@@ -30,7 +35,8 @@ public class ConfigIO {
     }
 
     public static void writeBinary(TaskManagerConfig config, File file) {
-        try (BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(file))
+        try (BufferedOutputStream bos = new BufferedOutputStream(
+                Files.newOutputStream(Paths.get(file.getPath())))
         ) {
             write(config, bos);
         } catch (IOException e) {
@@ -39,7 +45,9 @@ public class ConfigIO {
     }
 
     public static void readBinary(TaskManagerConfig config, File file) {
-        try (BufferedInputStream bis = new BufferedInputStream(new FileInputStream(file))) {
+        try (BufferedInputStream bis = new BufferedInputStream(
+                Files.newInputStream(Paths.get(file.getPath())))
+        ) {
             read(config, bis);
         } catch (IOException e) {
             logger.error("Exception during deserialization of TaskManagerConfig object", e);
@@ -78,7 +86,7 @@ public class ConfigIO {
     }
 
     public static void writeText(TaskManagerConfig config, File file) {
-        try (FileWriter writer = new FileWriter(file)) {
+        try (BufferedWriter writer = Files.newBufferedWriter(Paths.get(file.getPath()))) {
             write(config, writer);
         } catch (IOException e) {
             logger.error("Exception during serialization of TaskManagerConfig object", e);
@@ -86,7 +94,7 @@ public class ConfigIO {
     }
 
     public static void readText(TaskManagerConfig config, File file) {
-        try (FileReader reader = new FileReader(file)) {
+        try (BufferedReader reader = Files.newBufferedReader(Paths.get(file.getPath()))) {
             read(config, reader);
         } catch (IOException e) {
             logger.error("Exception during deserialization of TaskManagerConfig object", e);

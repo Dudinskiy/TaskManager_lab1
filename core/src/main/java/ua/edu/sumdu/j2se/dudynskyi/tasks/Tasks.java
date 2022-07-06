@@ -5,6 +5,10 @@ import java.util.*;
 import java.util.stream.Stream;
 
 public class Tasks {
+
+    private Tasks() {
+    }
+
     public static Iterable<Task> incoming(
             Iterable<Task> tasks, LocalDateTime start, LocalDateTime end) {
         if (tasks instanceof AbstractTaskList) {
