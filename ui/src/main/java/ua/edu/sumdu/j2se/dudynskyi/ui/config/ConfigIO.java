@@ -70,8 +70,7 @@ public class ConfigIO {
 
     public static void read(TaskManagerConfig config, Reader in) {
         try (BufferedReader br = new BufferedReader(in)) {
-            String str = "";
-            StringBuilder builder = new StringBuilder(str);
+            StringBuilder builder = new StringBuilder();
             while (br.ready()) {
                 builder.append(br.readLine());
             }

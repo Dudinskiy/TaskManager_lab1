@@ -30,14 +30,12 @@ public class MainController extends Controller {
 
     public int process(AbstractTaskList taskList) {
         int action = view.printInfo(taskList);
-        for (; ; ) {
+
+        while (action != EXIT_ACTION) {
             for (Controller controller : controllers) {
                 if (controller.canProcess(action)) {
                     action = controller.process(this.taskList);
                 }
-            }
-            if (action == EXIT_ACTION) {
-                break;
             }
         }
         return EXIT_ACTION;

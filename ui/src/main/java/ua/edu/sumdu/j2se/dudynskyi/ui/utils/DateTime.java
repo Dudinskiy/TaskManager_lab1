@@ -2,13 +2,13 @@ package ua.edu.sumdu.j2se.dudynskyi.ui.utils;
 
 import ua.edu.sumdu.j2se.dudynskyi.ui.prints.UIPrintable;
 
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class DateTime {
 
-    private static final String dateFormat = "yyyy-MM-dd HH:mm";
+    private static final String fullDateFormat = "yyyy-MM-dd HH:mm";
+    private static final int shortDateSize = 11;
 
     private DateTime() {
     }
@@ -17,7 +17,7 @@ public class DateTime {
         if (time.isEmpty()) {
             return null;
         } else {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern(dateFormat);
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern(fullDateFormat);
             return LocalDateTime.parse(time, formatter);
         }
     }
@@ -26,7 +26,7 @@ public class DateTime {
         LocalDateTime time;
         String timeStr;
         if (Validation.dateValidation(inputData)) {
-            if (inputData.length() == 11) {
+            if (inputData.length() == shortDateSize) {
                 timeStr = getStringForShortDate(inputData);
             } else {
                 timeStr = inputData;

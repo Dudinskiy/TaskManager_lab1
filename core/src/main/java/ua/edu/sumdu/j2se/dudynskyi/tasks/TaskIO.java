@@ -88,7 +88,6 @@ public class TaskIO {
     }
 
     public static void writeBinary(AbstractTaskList tasks, File file) throws TaskIOException {
-        //BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(file)
         try (BufferedOutputStream bos = new BufferedOutputStream(
                 Files.newOutputStream(Paths.get(file.getPath())))
         ) {
@@ -99,7 +98,6 @@ public class TaskIO {
     }
 
     public static void readBinary(AbstractTaskList tasks, File file) throws TaskIOException {
-        //BufferedInputStream bis = new BufferedInputStream(new FileInputStream(file))
         try (BufferedInputStream bis = new BufferedInputStream(
                 Files.newInputStream(Paths.get(file.getPath())))) {
             read(tasks, bis);
@@ -126,8 +124,7 @@ public class TaskIO {
 
     public static void read(AbstractTaskList tasks, Reader in) throws TaskIOException {
         try (BufferedReader br = new BufferedReader(in)) {
-            String str = "";
-            StringBuilder builder = new StringBuilder(str);
+            StringBuilder builder = new StringBuilder();
             while (br.ready()) {
                 builder.append(br.readLine());
             }

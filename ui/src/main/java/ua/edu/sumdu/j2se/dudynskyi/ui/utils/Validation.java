@@ -21,7 +21,7 @@ public class Validation {
     }
 
     public static boolean dateValidation(String date) {
-        return dateFullFormat(date) || dateShortFormat(date);
+        return fullDateFormat(date) || shortDateFormat(date);
     }
 
     public static boolean languageValidation(String language) {
@@ -30,7 +30,7 @@ public class Validation {
                 Languages.RUS.toString().equalsIgnoreCase(language);
     }
 
-    private static boolean dateFullFormat(String date) {
+    private static boolean fullDateFormat(String date) {
         String regDate = "^20[2-9][2-9]-(0[1-9]|1[0-2])-(0[1-9]|1[0-9]|2[0-9]|3[0-1]) " +
                 "(0[0-9]|1[0-9]|2[0-3]):(0[1-9]|1[0-9]|2[0-9]|3[0-9]|4[0-9]|5[0-9]|00)$";
 
@@ -39,7 +39,7 @@ public class Validation {
         return matcher.matches();
     }
 
-    private static boolean dateShortFormat(String date) {
+    private static boolean shortDateFormat(String date) {
         String regDate = "^(0[1-9]|1[0-2])-(0[1-9]|1[0-9]|2[0-9]|3[0-1]) " +
                 "(0[0-9]|1[0-9]|2[0-3]):(0[1-9]|1[0-9]|2[0-9]|3[0-9]|4[0-9]|5[0-9]|00)$";
 

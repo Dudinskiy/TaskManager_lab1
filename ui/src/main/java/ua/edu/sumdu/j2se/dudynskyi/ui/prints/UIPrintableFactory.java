@@ -8,7 +8,7 @@ public class UIPrintableFactory {
     }
 
     public static UIPrintable createUIPrintable(TaskManagerConfig config) {
-        if (config != null) {
+        if (config != null && config.getLanguage() != null) {
             switch (config.getLanguage()) {
                 case UKR:
                     return new PrintUkr();

@@ -28,7 +28,7 @@ public class NotificationManager implements Runnable {
 
     public void checkTasks() {
         logger.info("Notification manager has started");
-        for (; ; ) {
+        while (true) {
             Set<Task> taskSet = new HashSet<>();
             for (Task task : taskList) {
                 taskSet.add(task);
