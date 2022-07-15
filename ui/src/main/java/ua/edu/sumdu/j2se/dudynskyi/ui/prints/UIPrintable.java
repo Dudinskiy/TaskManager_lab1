@@ -3,6 +3,10 @@ package ua.edu.sumdu.j2se.dudynskyi.ui.prints;
 import ua.edu.sumdu.j2se.dudynskyi.tasks.AbstractTaskList;
 import ua.edu.sumdu.j2se.dudynskyi.tasks.Task;
 
+import java.time.LocalDateTime;
+import java.util.Set;
+import java.util.SortedMap;
+
 public interface UIPrintable {
 
     void printStartPhrase();
@@ -42,4 +46,6 @@ public interface UIPrintable {
     void printInvalidPastTimeInput();
     void printInvalidDateInput();
     void printInvalidRepeatInterval();
+    void printCalendar(SortedMap<LocalDateTime, Set<Task>> calendar);
+    void printTask(Task task);
 }

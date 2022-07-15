@@ -33,38 +33,45 @@ public class AddTaskView extends AbstractView {
         LocalDateTime endTime;
         int repeatInterval;
         Task task;
-        String userInput;
+        String inputTitle;
+        String selectTaskType;
+        String inputTime;
+        String inputStartTime;
+        String inputEndTime;
+        String inputRepeatInterval;
 
         try {
             while (true) {
-                userInput = reader.readLine();
-                if (Validation.cancelValidation(userInput)) {
+                selectTaskType = reader.readLine();
+                if (Validation.cancelValidation(selectTaskType)) {
                     printUI.printCancel();
                     return Controller.MAIN_MENU_ACTION;
                 }
-                if (Validation.yesNoValidation(userInput)) {
+                if (Validation.yesNoValidation(selectTaskType)) {
                     break;
                 } else {
                     printUI.printInvalidYesNoInput();
                 }
             }
+
             printUI.printInputTaskTitle();
-            userInput = reader.readLine();
-            if (Validation.cancelValidation(userInput)) {
+            inputTitle = reader.readLine();
+            if (Validation.cancelValidation(inputTitle)) {
                 printUI.printCancel();
                 return Controller.MAIN_MENU_ACTION;
             } else {
-                title = userInput;
+                title = inputTitle;
             }
-            if (Validation.yesNoValidation(userInput)) {
+
+            if (Validation.yesValidation(selectTaskType)) {
                 printUI.printInputTime();
                 while (true) {
-                    userInput = reader.readLine();
-                    if (Validation.cancelValidation(userInput)) {
+                    inputTime = reader.readLine();
+                    if (Validation.cancelValidation(inputTime)) {
                         printUI.printCancel();
                         return Controller.MAIN_MENU_ACTION;
                     } else {
-                        time = DateTime.getTime(userInput, printUI);
+                        time = DateTime.getTime(inputTime, printUI);
                         if (time != null) {
                             break;
                         }
@@ -74,12 +81,12 @@ public class AddTaskView extends AbstractView {
             } else {
                 printUI.printInputStartTime();
                 while (true) {
-                    userInput = reader.readLine();
-                    if (Validation.cancelValidation(userInput)) {
+                    inputStartTime = reader.readLine();
+                    if (Validation.cancelValidation(inputStartTime)) {
                         printUI.printCancel();
                         return Controller.MAIN_MENU_ACTION;
                     } else {
-                        startTime = DateTime.getTime(userInput, printUI);
+                        startTime = DateTime.getTime(inputStartTime, printUI);
                         if (startTime != null) {
                             break;
                         }
@@ -87,12 +94,12 @@ public class AddTaskView extends AbstractView {
                 }
                 printUI.printInputEndTime();
                 while (true) {
-                    userInput = reader.readLine();
-                    if (Validation.cancelValidation(userInput)) {
+                    inputEndTime = reader.readLine();
+                    if (Validation.cancelValidation(inputEndTime)) {
                         printUI.printCancel();
                         return Controller.MAIN_MENU_ACTION;
                     } else {
-                        endTime = DateTime.getTime(userInput, printUI);
+                        endTime = DateTime.getTime(inputEndTime, printUI);
                         if (endTime != null) {
                             break;
                         }
@@ -101,12 +108,12 @@ public class AddTaskView extends AbstractView {
                 while (startTime.isAfter(endTime) || startTime.equals(endTime)) {
                     printUI.printEndTimeBiggerStartTime();
                     while (true) {
-                        userInput = reader.readLine();
-                        if (Validation.cancelValidation(userInput)) {
+                        inputEndTime = reader.readLine();
+                        if (Validation.cancelValidation(inputEndTime)) {
                             printUI.printCancel();
                             return Controller.MAIN_MENU_ACTION;
                         } else {
-                            endTime = DateTime.getTime(userInput, printUI);
+                            endTime = DateTime.getTime(inputEndTime, printUI);
                             if (endTime != null) {
                                 break;
                             }
@@ -115,12 +122,12 @@ public class AddTaskView extends AbstractView {
                 }
                 printUI.printInputRepeatInterval();
                 while (true) {
-                    userInput = reader.readLine();
-                    if (Validation.cancelValidation(userInput)) {
+                    inputRepeatInterval = reader.readLine();
+                    if (Validation.cancelValidation(inputRepeatInterval)) {
                         printUI.printCancel();
                         return Controller.MAIN_MENU_ACTION;
                     } else {
-                        repeatInterval = DateTime.getRepeatInterval(userInput, printUI);
+                        repeatInterval = DateTime.getRepeatInterval(inputRepeatInterval, printUI);
                         if (repeatInterval > 0) {
                             break;
                         }

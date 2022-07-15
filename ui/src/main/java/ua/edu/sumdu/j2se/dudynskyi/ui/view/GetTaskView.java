@@ -47,7 +47,7 @@ public class GetTaskView extends AbstractView {
                 }
             }
             Task task = taskList.getTask(taskNumber - 1);
-            System.out.println(task);
+            printUI.printTask(task);
         } catch (IOException e) {
             logger.error("User input error", e);
             printUI.printIsWrongTryAgain();

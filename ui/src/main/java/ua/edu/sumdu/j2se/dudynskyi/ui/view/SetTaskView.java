@@ -31,7 +31,14 @@ public class SetTaskView extends AbstractView {
             return Controller.MAIN_MENU_ACTION;
         }
 
-        String userInput;
+        String inputTitle;
+        String inputTaskNumber;
+        String inputChangeType;
+        String inputTime;
+        String inputStartTime;
+        String inputEndTime;
+        String inputRepeatInterval;
+
         String title;
         Task task;
         LocalDateTime time;
@@ -45,13 +52,14 @@ public class SetTaskView extends AbstractView {
         printUI.printTaskList(taskList);
 
         try {
+            //Выбор задачи из списка
             while (true) {
-                userInput = reader.readLine();
-                if (Validation.cancelValidation(userInput)) {
+                inputTaskNumber = reader.readLine();
+                if (Validation.cancelValidation(inputTaskNumber)) {
                     printUI.printCancel();
                     return Controller.MAIN_MENU_ACTION;
                 } else {
-                    taskNumber = UserInput.inputTaskNumber(userInput, taskList, printUI);
+                    taskNumber = UserInput.inputTaskNumber(inputTaskNumber, taskList, printUI);
                     if (taskNumber > 0) {
                         break;
                     }
@@ -61,42 +69,46 @@ public class SetTaskView extends AbstractView {
             System.out.println(task + "\n");
             printUI.printSetTaskHeadPhrase();
 
+            //Выбор: меняем тип задачи или нет
             while (true) {
-                userInput = reader.readLine();
-                if (Validation.cancelValidation(userInput)) {
+                inputChangeType = reader.readLine();
+                if (Validation.cancelValidation(inputChangeType)) {
                     printUI.printCancel();
                     return Controller.MAIN_MENU_ACTION;
                 }
-                if (Validation.yesNoValidation(userInput)) {
+                if (Validation.yesNoValidation(inputChangeType)) {
                     break;
                 } else {
                     printUI.printInvalidYesNoInput();
                 }
             }
+
+            //Меняем название задачи
             printUI.printInputTaskTitle();
-            userInput = reader.readLine();
-            if (Validation.cancelValidation(userInput)) {
+            inputTitle = reader.readLine();
+            if (Validation.cancelValidation(inputTitle)) {
                 printUI.printCancel();
                 return Controller.MAIN_MENU_ACTION;
             } else {
-                if (!userInput.isEmpty()) {
-                    title = userInput;
+                if (!inputTitle.isEmpty()) {
+                    title = inputTitle;
                     isChanged = true;
                 } else {
                     title = task.getTitle();
                 }
             }
-            if (Validation.yesNoValidation(userInput)) {
+            //Тип задачи меняется
+            if (Validation.yesValidation(inputChangeType)) {
                 if (task.isRepeated()) {
                     printUI.printInputNewTime();
                     while (true) {
-                        userInput = reader.readLine();
-                        if (Validation.cancelValidation(userInput)) {
+                        inputTime = reader.readLine();
+                        if (Validation.cancelValidation(inputTime)) {
                             printUI.printCancel();
                             return Controller.MAIN_MENU_ACTION;
                         } else {
-                            time = DateTime.getTime(userInput, printUI);
-                            if (time == null && userInput.isEmpty()) {
+                            time = DateTime.getTime(inputTime, printUI);
+                            if (time == null && inputTime.isEmpty()) {
                                 break;
                             }
                             if (time != null) {
@@ -113,13 +125,13 @@ public class SetTaskView extends AbstractView {
                 } else {
                     printUI.printInputNewStartTime();
                     while (true) {
-                        userInput = reader.readLine();
-                        if (Validation.cancelValidation(userInput)) {
+                        inputStartTime = reader.readLine();
+                        if (Validation.cancelValidation(inputStartTime)) {
                             printUI.printCancel();
                             return Controller.MAIN_MENU_ACTION;
                         } else {
-                            startTime = DateTime.getTime(userInput, printUI);
-                            if (startTime == null && userInput.isEmpty()) {
+                            startTime = DateTime.getTime(inputStartTime, printUI);
+                            if (startTime == null && inputStartTime.isEmpty()) {
                                 break;
                             }
                             if (startTime != null) {
@@ -130,13 +142,13 @@ public class SetTaskView extends AbstractView {
                     }
                     printUI.printInputNewEndTime();
                     while (true) {
-                        userInput = reader.readLine();
-                        if (Validation.cancelValidation(userInput)) {
+                        inputEndTime = reader.readLine();
+                        if (Validation.cancelValidation(inputEndTime)) {
                             printUI.printCancel();
                             return Controller.MAIN_MENU_ACTION;
                         } else {
-                            endTime = DateTime.getTime(userInput, printUI);
-                            if (endTime == null && userInput.isEmpty()) {
+                            endTime = DateTime.getTime(inputEndTime, printUI);
+                            if (endTime == null && inputEndTime.isEmpty()) {
                                 break;
                             }
                             if (endTime != null) {
@@ -146,9 +158,9 @@ public class SetTaskView extends AbstractView {
                         }
                     }
                     printUI.printInputRepeatInterval();
-                    String interval = reader.readLine();
-                    if (!interval.isEmpty()) {
-                        repeatInterval = Integer.parseInt(interval);
+                    inputRepeatInterval = reader.readLine();
+                    if (!inputRepeatInterval.isEmpty()) {
+                        repeatInterval = Integer.parseInt(inputRepeatInterval);
                     } else {
                         repeatInterval = task.getRepeatInterval();
                     }
@@ -160,17 +172,19 @@ public class SetTaskView extends AbstractView {
                     }
                     task.setTime(startTime, endTime, repeatInterval);
                 }
+
+            //Тип задачи не меняется
             } else {
                 if (task.isRepeated()) {
                     printUI.printInputNewStartTime();
                     while (true) {
-                        userInput = reader.readLine();
-                        if (Validation.cancelValidation(userInput)) {
+                        inputStartTime = reader.readLine();
+                        if (Validation.cancelValidation(inputStartTime)) {
                             printUI.printCancel();
                             return Controller.MAIN_MENU_ACTION;
                         } else {
-                            startTime = DateTime.getTime(userInput, printUI);
-                            if (startTime == null && userInput.isEmpty()) {
+                            startTime = DateTime.getTime(inputStartTime, printUI);
+                            if (startTime == null && inputStartTime.isEmpty()) {
                                 break;
                             }
                             if (startTime != null) {
@@ -181,13 +195,13 @@ public class SetTaskView extends AbstractView {
                     }
                     printUI.printInputNewEndTime();
                     while (true) {
-                        userInput = reader.readLine();
-                        if (Validation.cancelValidation(userInput)) {
+                        inputEndTime = reader.readLine();
+                        if (Validation.cancelValidation(inputEndTime)) {
                             printUI.printCancel();
                             return Controller.MAIN_MENU_ACTION;
                         } else {
-                            endTime = DateTime.getTime(userInput, printUI);
-                            if (endTime == null && userInput.isEmpty()) {
+                            endTime = DateTime.getTime(inputEndTime, printUI);
+                            if (endTime == null && inputEndTime.isEmpty()) {
                                 break;
                             }
                             if (endTime != null) {
@@ -200,12 +214,12 @@ public class SetTaskView extends AbstractView {
                         while (startTime.isAfter(endTime) || startTime.equals(endTime)) {
                             printUI.printEndTimeBiggerStartTime();
                             while (true) {
-                                userInput = reader.readLine();
-                                if (Validation.cancelValidation(userInput)) {
+                                inputEndTime = reader.readLine();
+                                if (Validation.cancelValidation(inputEndTime)) {
                                     printUI.printCancel();
                                     return Controller.MAIN_MENU_ACTION;
                                 } else {
-                                    endTime = DateTime.getTime(userInput, printUI);
+                                    endTime = DateTime.getTime(inputEndTime, printUI);
                                     if (endTime != null) {
                                         break;
                                     }
@@ -215,13 +229,13 @@ public class SetTaskView extends AbstractView {
                     }
                     printUI.printInputRepeatInterval();
                     while (true) {
-                        userInput = reader.readLine();
-                        if (Validation.cancelValidation(userInput)) {
+                        inputRepeatInterval = reader.readLine();
+                        if (Validation.cancelValidation(inputRepeatInterval)) {
                             printUI.printCancel();
                             return Controller.MAIN_MENU_ACTION;
                         } else {
-                            repeatInterval = DateTime.getRepeatInterval(userInput, printUI);
-                            if (repeatInterval < 0 && userInput.isEmpty()) {
+                            repeatInterval = DateTime.getRepeatInterval(inputRepeatInterval, printUI);
+                            if (repeatInterval < 0 && inputRepeatInterval.isEmpty()) {
                                 break;
                             }
                             if (repeatInterval > 0) {
@@ -243,13 +257,13 @@ public class SetTaskView extends AbstractView {
                 } else {
                     printUI.printInputNewTime();
                     while (true) {
-                        userInput = reader.readLine();
-                        if (Validation.cancelValidation(userInput)) {
+                        inputTime = reader.readLine();
+                        if (Validation.cancelValidation(inputTime)) {
                             printUI.printCancel();
                             return Controller.MAIN_MENU_ACTION;
                         } else {
-                            time = DateTime.getTime(userInput, printUI);
-                            if (time == null && userInput.isEmpty()) {
+                            time = DateTime.getTime(inputTime, printUI);
+                            if (time == null && inputTime.isEmpty()) {
                                 break;
                             }
                             if (time != null) {

@@ -3,6 +3,9 @@ package ua.edu.sumdu.j2se.dudynskyi.ui.prints;
 import ua.edu.sumdu.j2se.dudynskyi.tasks.AbstractTaskList;
 import ua.edu.sumdu.j2se.dudynskyi.tasks.Task;
 
+import java.time.LocalDateTime;
+import java.util.*;
+
 public class PrintUkr implements UIPrintable {
     @Override
     public void printStartPhrase() {
@@ -220,5 +223,71 @@ public class PrintUkr implements UIPrintable {
     @Override
     public void printInvalidRepeatInterval() {
         System.out.println("Неправильне значення інтервалу");
+    }
+
+    @Override
+    public void printCalendar(SortedMap<LocalDateTime, Set<Task>> calendar) {
+        if (calendar == null || calendar.isEmpty()) {
+            System.out.println("Немає завдань на вказаний період:");
+            return;
+        }
+
+        int i = 1;
+        System.out.println("Календар завдань на вказаний період:");
+
+        for (Map.Entry<LocalDateTime, Set<Task>> entry : calendar.entrySet()) {
+            String date = entry.getKey().toString();
+            List<Task> taskList = new ArrayList<>(entry.getValue());
+            StringBuilder builder = new StringBuilder();
+            for (Task value : taskList) {
+                builder.append(value.getTitle()).append(",");
+            }
+            String str = builder.toString();
+            String allTasks = str.substring(0, str.length() - 1);
+
+            System.out.println(i + ") " + date.replace("T", " ") + " - " + allTasks);
+            i++;
+        }
+    }
+
+    @Override
+    public void printTask(Task task) {
+        if (task == null) {
+            return;
+        }
+        if (task.isRepeated()) {
+            int numberOfDays = task.getRepeatInterval() / 86400;
+            int numberOfHours = (task.getRepeatInterval() % 86400) / 3600;
+            int numberOfMinutes = ((task.getRepeatInterval() % 86400) % 3600) / 60;
+            StringBuilder builder = new StringBuilder();
+            String interval = "0";
+
+            if (numberOfDays > 0) {
+                builder.append(numberOfDays).append(" дн. ")
+                        .append(numberOfHours).append(" г. ")
+                        .append(numberOfMinutes).append(" хв.");
+                interval = builder.toString();
+            }
+            if (numberOfDays == 0) {
+                builder.append(numberOfHours).append(" г. ")
+                        .append(numberOfMinutes).append(" хв.");
+                interval = builder.toString();
+            }
+            if (numberOfDays == 0 && numberOfHours == 0) {
+                builder.append(numberOfMinutes).append(" хв.");
+                interval = builder.toString();
+            }
+
+            System.out.println("Назва задачі - " + task.getTitle());
+            System.out.println("Час початку - "
+                    + task.getStartTime().toString().replace("T", " "));
+            System.out.println("Час закінчення - "
+                    + task.getEndTime().toString().replace("T", " "));
+            System.out.println("Інтервал - " + interval);
+        } else {
+            System.out.println("Назва задачі - " + task.getTitle());
+            System.out.println("Час виконання - "
+                    + task.getTime().toString().replace("T", " "));
+        }
     }
 }

@@ -16,6 +16,10 @@ public class Validation {
                 || UserInput.NO.equals(choice);
     }
 
+    public static boolean yesValidation(String choice) {
+        return UserInput.YES.equals(choice);
+    }
+
     public static boolean cancelValidation(String cancel) {
         return UserInput.CANCEL.equals(cancel);
     }

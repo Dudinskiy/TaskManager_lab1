@@ -3,6 +3,9 @@ package ua.edu.sumdu.j2se.dudynskyi.ui.prints;
 import ua.edu.sumdu.j2se.dudynskyi.tasks.AbstractTaskList;
 import ua.edu.sumdu.j2se.dudynskyi.tasks.Task;
 
+import java.time.LocalDateTime;
+import java.util.*;
+
 public class PrintsEng implements UIPrintable {
 
     public void printStartPhrase() {
@@ -197,5 +200,71 @@ public class PrintsEng implements UIPrintable {
     @Override
     public void printInvalidRepeatInterval() {
         System.out.println("Invalid interval value");
+    }
+
+    @Override
+    public void printCalendar(SortedMap<LocalDateTime, Set<Task>> calendar) {
+        if (calendar == null || calendar.isEmpty()) {
+            System.out.println("No tasks for the specified period:");
+            return;
+        }
+
+        int i = 1;
+        System.out.println("Calendar of tasks for the specified period:");
+
+        for (Map.Entry<LocalDateTime, Set<Task>> entry : calendar.entrySet()) {
+            String date = entry.getKey().toString();
+            List<Task> taskList = new ArrayList<>(entry.getValue());
+            StringBuilder builder = new StringBuilder();
+            for (Task value : taskList) {
+                builder.append(value.getTitle()).append(",");
+            }
+            String str = builder.toString();
+            String allTasks = str.substring(0, str.length() - 1);
+
+            System.out.println(i + ") " + date.replace("T", " ") + " - " + allTasks);
+            i++;
+        }
+    }
+
+    @Override
+    public void printTask(Task task) {
+        if (task == null) {
+            return;
+        }
+        if (task.isRepeated()) {
+            int numberOfDays = task.getRepeatInterval() / 86400;
+            int numberOfHours = (task.getRepeatInterval() % 86400) / 3600;
+            int numberOfMinutes = ((task.getRepeatInterval() % 86400) % 3600) / 60;
+            StringBuilder builder = new StringBuilder();
+            String interval = "0";
+
+            if (numberOfDays > 0) {
+                builder.append(numberOfDays).append(" d. ")
+                        .append(numberOfHours).append(" h. ")
+                        .append(numberOfMinutes).append(" min.");
+                interval = builder.toString();
+            }
+            if (numberOfDays == 0) {
+                builder.append(numberOfHours).append(" h. ")
+                        .append(numberOfMinutes).append(" min.");
+                interval = builder.toString();
+            }
+            if (numberOfDays == 0 && numberOfHours == 0) {
+                builder.append(numberOfMinutes).append(" min.");
+                interval = builder.toString();
+            }
+
+            System.out.println("Task name - " + task.getTitle());
+            System.out.println("Start time - "
+                    + task.getStartTime().toString().replace("T", " "));
+            System.out.println("End time - "
+                    + task.getEndTime().toString().replace("T", " "));
+            System.out.println("Interval - " + interval);
+        } else {
+            System.out.println("Task name - " + task.getTitle());
+            System.out.println("Lead time - "
+                    + task.getTime().toString().replace("T", " "));
+        }
     }
 }

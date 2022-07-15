@@ -36,16 +36,18 @@ public class CalendarView extends AbstractView {
 
         LocalDateTime start;
         LocalDateTime end;
-        String userInput;
+        String inputStartTime;
+        String inputEndTime;
+
         try {
             printUI.printInputStartTimeCalendar();
             while (true) {
-                userInput = reader.readLine();
-                if (Validation.cancelValidation(userInput)) {
+                inputStartTime = reader.readLine();
+                if (Validation.cancelValidation(inputStartTime)) {
                     printUI.printCancel();
                     return Controller.MAIN_MENU_ACTION;
                 } else {
-                    start = DateTime.getTime(userInput, printUI);
+                    start = DateTime.getTime(inputStartTime, printUI);
                     if (start != null) {
                         break;
                     }
@@ -53,12 +55,12 @@ public class CalendarView extends AbstractView {
             }
             printUI.printInputEndTimeCalendar();
             while (true) {
-                userInput = reader.readLine();
-                if (Validation.cancelValidation(userInput)) {
+                inputEndTime = reader.readLine();
+                if (Validation.cancelValidation(inputEndTime)) {
                     printUI.printCancel();
                     return Controller.MAIN_MENU_ACTION;
                 } else {
-                    end = DateTime.getTime(userInput, printUI);
+                    end = DateTime.getTime(inputEndTime, printUI);
                     if (end != null) {
                         break;
                     }
@@ -67,12 +69,12 @@ public class CalendarView extends AbstractView {
             while (start.isAfter(end) || start.equals(end)) {
                 printUI.printEndTimeBiggerStartTime();
                 while (true) {
-                    userInput = reader.readLine();
-                    if (Validation.cancelValidation(userInput)) {
+                    inputEndTime = reader.readLine();
+                    if (Validation.cancelValidation(inputEndTime)) {
                         printUI.printCancel();
                         return Controller.MAIN_MENU_ACTION;
                     } else {
-                        end = DateTime.getTime(userInput, printUI);
+                        end = DateTime.getTime(inputEndTime, printUI);
                         if (end != null) {
                             break;
                         }
@@ -81,7 +83,7 @@ public class CalendarView extends AbstractView {
             }
 
             SortedMap<LocalDateTime, Set<Task>> calendar = Tasks.calendar(taskList, start, end);
-            System.out.println(calendar);
+            printUI.printCalendar(calendar);
 
         } catch (IOException e) {
             logger.error("User input error", e);

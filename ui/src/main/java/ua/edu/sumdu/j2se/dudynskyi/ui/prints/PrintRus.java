@@ -3,6 +3,9 @@ package ua.edu.sumdu.j2se.dudynskyi.ui.prints;
 import ua.edu.sumdu.j2se.dudynskyi.tasks.AbstractTaskList;
 import ua.edu.sumdu.j2se.dudynskyi.tasks.Task;
 
+import java.time.LocalDateTime;
+import java.util.*;
+
 public class PrintRus implements UIPrintable {
     @Override
     public void printStartPhrase() {
@@ -11,7 +14,7 @@ public class PrintRus implements UIPrintable {
 
     @Override
     public void printFinishPhrase() {
-        System.out.println("Менеджер завершил начал работу.\n" +
+        System.out.println("Менеджер завершил работу.\n" +
                 "Наша команда благодарна Вам за выбор нашей продукции.\n" +
                 "Оставайтесь с нами");
     }
@@ -220,5 +223,72 @@ public class PrintRus implements UIPrintable {
     @Override
     public void printInvalidRepeatInterval() {
         System.out.println("Неверное значение интервала");
+    }
+
+    @Override
+    public void printCalendar(SortedMap<LocalDateTime, Set<Task>> calendar) {
+        if (calendar == null || calendar.isEmpty()) {
+            System.out.println("Нет задач на указанный период:");
+            return;
+        }
+
+        int i = 1;
+        System.out.println("Календарь задач на указанный период:");
+
+        for (Map.Entry<LocalDateTime, Set<Task>> entry : calendar.entrySet()) {
+            String date = entry.getKey().toString();
+            List<Task> taskList = new ArrayList<>(entry.getValue());
+            StringBuilder builder = new StringBuilder();
+            for (Task value : taskList) {
+                builder.append(value.getTitle()).append(",");
+            }
+            String str = builder.toString();
+            String allTasks = str.substring(0, str.length() - 1);
+
+            System.out.println(i + ") " + date.replace("T", " ") + " - " + allTasks);
+            i++;
+        }
+    }
+
+    @Override
+    public void printTask(Task task) {
+        if (task == null) {
+            return;
+        }
+
+        if (task.isRepeated()) {
+            int numberOfDays = task.getRepeatInterval() / 86400;
+            int numberOfHours = (task.getRepeatInterval() % 86400) / 3600;
+            int numberOfMinutes = ((task.getRepeatInterval() % 86400) % 3600) / 60;
+            StringBuilder builder = new StringBuilder();
+            String interval = "0";
+
+            if (numberOfDays > 0) {
+                builder.append(numberOfDays).append(" дн. ")
+                        .append(numberOfHours).append(" ч. ")
+                        .append(numberOfMinutes).append(" мин.");
+                interval = builder.toString();
+            }
+            if (numberOfDays == 0) {
+                builder.append(numberOfHours).append(" ч. ")
+                        .append(numberOfMinutes).append(" мин.");
+                interval = builder.toString();
+            }
+            if (numberOfDays == 0 && numberOfHours == 0) {
+                builder.append(numberOfMinutes).append(" мин.");
+                interval = builder.toString();
+            }
+
+            System.out.println("Название задачи - " + task.getTitle());
+            System.out.println("Время начала - "
+                    + task.getStartTime().toString().replace("T", " "));
+            System.out.println("Время окончания - "
+                    + task.getEndTime().toString().replace("T", " "));
+            System.out.println("Интервал - " + interval);
+        } else {
+            System.out.println("Название задачи - " + task.getTitle());
+            System.out.println("Время выполнения - "
+                    + task.getTime().toString().replace("T", " "));
+        }
     }
 }
